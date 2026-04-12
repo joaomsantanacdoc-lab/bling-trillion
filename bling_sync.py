@@ -43,10 +43,8 @@ def save_tokens(tokens):
 
 
 def update_github_secret(name, value):
-    import base64
-    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey
-    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
-    from cryptography.hazmat.backends import default_backend
+    import nacl.public
+    import nacl.encoding
 
     token  = os.environ['GH_PAT']
     repo   = os.environ['GITHUB_REPOSITORY']
@@ -56,41 +54,20 @@ def update_github_secret(name, value):
         'X-GitHub-Api-Version': '2022-11-28'
     }
 
-    # Get public key
     key_resp = requests.get(
         f'https://api.github.com/repos/{repo}/actions/secrets/public-key',
         headers=headers
-    )
-    key_data = key_resp.json()
-    public_key = key_data['key']
-    key_id     = key_data['key_id']
+    ).json()
 
-    # Encrypt secret
-    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey
-    pk_bytes    = base64.b64decode(public_key)
-    sealed      = _seal_secret(pk_bytes, value.encode())
-    encrypted   = base64.b64encode(sealed).decode()
+    pk = nacl.public.PublicKey(key_resp['key'], nacl.encoding.Base64Encoder)
+    encrypted = base64.b64encode(nacl.public.SealedBox(pk).encrypt(value.encode())).decode()
 
     requests.put(
         f'https://api.github.com/repos/{repo}/actions/secrets/{name}',
         headers=headers,
-        json={'encrypted_value': encrypted, 'key_id': key_id}
+        json={'encrypted_value': encrypted, 'key_id': key_resp['key_id']}
     )
     print(f'  Secret {name} atualizado.')
-
-
-def _seal_secret(public_key_bytes, secret_bytes):
-    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
-    from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
-    import secrets as sec
-
-    # Use PyNaCl SealBox equivalent via cryptography library
-    # Easier: use PyNaCl directly
-    import nacl.public
-    import nacl.encoding
-    pk = nacl.public.PublicKey(public_key_bytes)
-    sealed = nacl.public.SealedBox(pk).encrypt(secret_bytes)
-    return sealed
 
 
 def refresh_access_token(account):
