@@ -1,0 +1,33 @@
+name: Bling Sync
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install requests PyNaCl
+
+      - name: Sincronizar estoque
+        env:
+          BLING_A_CLIENT_ID:     ${{ secrets.BLING_A_CLIENT_ID }}
+          BLING_A_CLIENT_SECRET: ${{ secrets.BLING_A_CLIENT_SECRET }}
+          BLING_A_REFRESH_TOKEN: ${{ secrets.BLING_A_REFRESH_TOKEN }}
+          BLING_B_CLIENT_ID:     ${{ secrets.BLING_B_CLIENT_ID }}
+          BLING_B_CLIENT_SECRET: ${{ secrets.BLING_B_CLIENT_SECRET }}
+          BLING_B_REFRESH_TOKEN: ${{ secrets.BLING_B_REFRESH_TOKEN }}
+          GH_PAT:                ${{ secrets.GH_PAT }}
+          GITHUB_REPOSITORY:     ${{ github.repository }}
+          GITHUB_ACTIONS:        'true'
+        run: python bling_sync.py
