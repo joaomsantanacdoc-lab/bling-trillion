@@ -27,9 +27,12 @@ Sincronizar estoque do Bling A (funciona) para o Bling B (parou de sincronizar).
 - Controle avançado de estoque: Inserção de Estoque
 - Depósitos de Estoque
 
-## Status
-- [x] Apps criados em ambas as contas
+## Status em 2026-04-12
+- [x] Apps OAuth criados em ambas as contas
+- [x] Escopos adicionados (Produtos + Estoque)
 - [x] OAuth autenticado para ambas as contas
-- [ ] Adicionar escopo Produtos nos apps
-- [ ] Criar script bling_sync.py
-- [ ] Configurar GitHub Actions
+- [x] Script bling_sync.py criado e testado (10 produtos atualizados no 1º teste)
+- [x] Código enviado ao GitHub (joaomsantanacdoc-lab/bling-trillion)
+- [x] Secrets configurados no GitHub
+- [ ] Criar GH_PAT e adicionar como secret
+- [ ] Testar primeira execução no GitHub Actions
