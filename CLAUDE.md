@@ -14,16 +14,14 @@ Sincronizar estoque do Bling A (funciona) para o Bling B (parou de sincronizar).
 Sistema loja (disket.com.br)
         ↓ a cada ~15 min
    Bling A (funciona)
-
-cron-job.org (a cada 15 min)
-        ↓ chama GitHub API
-   GitHub Actions
-        ↓ roda bling_sync.py
+        ↓ GitHub Actions scheduler (*/15 * * * *)
+   bling_sync.py
+        ↓
    Bling B (sincronizado)
 ```
 
 ## Repositório
-- GitHub: https://github.com/joaomsantanacdoc-lab/bling-trillion (privado)
+- GitHub: https://github.com/joaomsantanacdoc-lab/bling-trillion (**público**)
 - Pasta local: `C:\Users\João Mateus\bling-sync\`
 
 ## Apps Bling criados
@@ -40,24 +38,22 @@ cron-job.org (a cada 15 min)
 - `bling_auth.py` — autenticação OAuth inicial (já usado)
 - `bling_tokens.json` — tokens locais (no .gitignore)
 - `.env` — credenciais locais (no .gitignore)
-- `.github/workflows/sync.yml` — workflow GitHub Actions
+- `.github/workflows/sync.yml` — workflow GitHub Actions (cron */15 * * * *)
 
 ## GitHub Secrets
 - `BLING_A_CLIENT_ID`, `BLING_A_CLIENT_SECRET`, `BLING_A_REFRESH_TOKEN`
 - `BLING_B_CLIENT_ID`, `BLING_B_CLIENT_SECRET`, `BLING_B_REFRESH_TOKEN`
 - `GH_PAT` — renova refresh tokens automaticamente após cada execução
 
-## Cron externo — cron-job.org
-- Job: "BLING" | Intervalo: 15 minutos | Timezone: America/Bahia
-- URL: `https://api.github.com/repos/joaomsantanacdoc-lab/bling-trillion/actions/workflows/sync.yml/dispatches`
-- Método POST | Body: `{"ref": "main"}`
-- Headers: Authorization Bearer GH_PAT, Content-Type application/json, Accept application/vnd.github+json
+## Agendamento
+- Repo **público** desde 2026-04-12 — scheduler nativo do GitHub Actions funciona gratuitamente
+- Cron: `*/15 * * * *` no `.github/workflows/sync.yml`
+- cron-job.org foi tentado mas descartado (stripava o header Authorization)
 
 ## Status — CONCLUÍDO em 2026-04-12
 - [x] Apps OAuth criados e autenticados em ambas as contas
 - [x] Script testado localmente (10 produtos atualizados)
-- [x] Código no GitHub, todos os secrets configurados
-- [x] GitHub Actions rodando — 1ª execução: SUCESSO (28s, 0 erros)
-- [x] Tokens renovados automaticamente a cada execução
+- [x] Código no GitHub público, todos os secrets configurados
+- [x] GitHub Actions rodando — SUCESSO (0 erros, tokens renovados automaticamente)
 - [x] .env e .gitignore configurados
-- [x] Cron externo ativo no cron-job.org (dispara a cada 15 min)
+- [x] Repo tornado público para scheduler nativo funcionar
