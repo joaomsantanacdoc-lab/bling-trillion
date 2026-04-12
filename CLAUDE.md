@@ -34,5 +34,5 @@ Sincronizar estoque do Bling A (funciona) para o Bling B (parou de sincronizar).
 - [x] Script bling_sync.py criado e testado (10 produtos atualizados no 1º teste)
 - [x] Código enviado ao GitHub (joaomsantanacdoc-lab/bling-trillion)
 - [x] Secrets configurados no GitHub
-- [ ] Criar GH_PAT e adicionar como secret
-- [ ] Testar primeira execução no GitHub Actions
+- [x] Criar GH_PAT e adicionar como secret
+- [x] Testar primeira execução no GitHub Actions — SUCESSO (28s, 0 erros)
