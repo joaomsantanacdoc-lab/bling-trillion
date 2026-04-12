@@ -1,4 +1,4 @@
 bling_tokens.json
+.env
 __pycache__/
 *.pyc
-.env

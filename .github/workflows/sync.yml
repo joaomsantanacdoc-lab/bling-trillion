@@ -17,7 +17,7 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar dependencias
-        run: pip install requests PyNaCl
+        run: pip install requests PyNaCl python-dotenv
 
       - name: Sincronizar estoque
         env:

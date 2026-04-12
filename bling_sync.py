@@ -4,6 +4,9 @@ import json
 import os
 import time
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()  # carrega .env quando rodando localmente
 
 BASE_URL = 'https://api.bling.com.br/Api/v3'
 TOKEN_URL = 'https://www.bling.com.br/Api/v3/oauth/token'
