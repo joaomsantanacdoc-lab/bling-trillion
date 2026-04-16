@@ -6,6 +6,7 @@ import json
 import threading
 import base64
 import time
+import secrets
 
 # Bling A (funciona)
 BLING_A = {
@@ -61,6 +62,8 @@ def get_tokens(account):
     global auth_code
     auth_code = None
 
+    state = secrets.token_urlsafe(16)
+
     server = http.server.HTTPServer(('localhost', PORT), OAuthHandler)
     thread = threading.Thread(target=server.handle_request)
     thread.daemon = True
@@ -70,6 +73,7 @@ def get_tokens(account):
         f"{AUTH_URL}?response_type=code"
         f"&client_id={account['client_id']}"
         f"&redirect_uri=http://localhost:{PORT}"
+        f"&state={state}"
     )
     print(f"\nAbrindo navegador para autenticar {account['name']}...")
     print(f"Se o navegador nao abrir, acesse:\n{auth_url}\n")

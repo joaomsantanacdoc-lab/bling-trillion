@@ -33,7 +33,13 @@ def load_tokens():
             }
         }
     with open(TOKENS_FILE) as f:
-        return json.load(f)
+        data = json.load(f)
+    # Suporta tanto o formato flat quanto o formato com chave "tokens" gerado pelo bling_auth.py
+    for key in ('bling_a', 'bling_b'):
+        if 'tokens' in data[key]:
+            nested = data[key].pop('tokens')
+            data[key].update(nested)
+    return data
 
 
 def save_tokens(tokens):
@@ -160,10 +166,17 @@ def sync():
     a = tokens['bling_a']
     b = tokens['bling_b']
 
-    # Renovar tokens no inicio
+    # Renovar tokens e salvar IMEDIATAMENTE antes de qualquer outra coisa
     print('Renovando tokens...')
-    refresh_access_token(a)
-    refresh_access_token(b)
+    ok_a = refresh_access_token(a)
+    ok_b = refresh_access_token(b)
+
+    if not ok_a or not ok_b:
+        print('Falha ao renovar tokens. Abortando para nao perder tokens validos.')
+        return
+
+    save_tokens(tokens)
+    print('  Tokens salvos com sucesso.')
 
     print('Lendo produtos do Bling A...')
     produtos_a = get_all_products(a)
@@ -198,7 +211,6 @@ def sync():
 
         time.sleep(0.3)
 
-    save_tokens(tokens)
     print(f'\nFinalizado: {atualizados} atualizados | {ignorados} sem alteracao | {erros} erros')
 
 
